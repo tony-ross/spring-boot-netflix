@@ -1,0 +1,104 @@
+scalar Date
+scalar DateTime
+
+# Movies from movies-service
+type Movie @key(fields: "id") {
+    id: ID!
+    title: String!
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+    # These fields will be resolved by reviews-service
+    reviews: [Review!]!
+    averageRating: Float
+    reviewCount: Int!
+}
+
+# Users from users-service
+type User @key(fields: "id") {
+    id: ID!
+    username: String!
+    email: String!
+    firstName: String
+    lastName: String
+    fullName: String!
+    createdAt: DateTime!
+    updatedAt: DateTime
+    # These fields will be resolved by reviews-service
+    reviews: [Review!]!
+}
+
+# Reviews from reviews-service
+type Review @key(fields: "id") {
+    id: ID!
+    text: String
+    rating: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime
+    # These fields will be resolved by their respective services
+    movie: Movie! @provides(fields: "id title")
+    user: User! @provides(fields: "id username")
+}
+
+# Input types
+input CreateMovieInput {
+    title: String!
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+}
+
+input CreateUserInput {
+    username: String!
+    email: String!
+    password: String!
+    firstName: String
+    lastName: String
+}
+
+input CreateReviewInput {
+    text: String
+    rating: Int!
+    movieId: ID!
+    userId: ID!
+}
+
+type Query {
+    # Movies queries
+    movies: [Movie!]!
+    movie(id: ID!): Movie
+    moviesByTitle(title: String!): [Movie!]!
+    moviesByGenre(genre: String!): [Movie!]!
+    moviesByDirector(director: String!): [Movie!]!
+
+    # Users queries
+    users: [User!]!
+    user(id: ID!): User
+    userByUsername(username: String!): User
+    userByEmail(email: String!): User
+
+    # Reviews queries
+    reviews: [Review!]!
+    review(id: ID!): Review
+    reviewsByMovie(movieId: ID!): [Review!]!
+    reviewsByUser(userId: ID!): [Review!]!
+}
+
+type Mutation {
+    # Movies mutations
+    createMovie(input: CreateMovieInput!): Movie!
+    updateMovie(id: ID!, input: CreateMovieInput!): Movie!
+    deleteMovie(id: ID!): Boolean!
+
+    # Users mutations
+    createUser(input: CreateUserInput!): User!
+    updateUser(id: ID!, input: CreateUserInput!): User!
+    deleteUser(id: ID!): Boolean!
+
+    # Reviews mutations
+    createReview(input: CreateReviewInput!): Review!
+    updateReview(id: ID!, input: CreateReviewInput!): Review!
+    deleteReview(id: ID!): Boolean!
+}

@@ -1,0 +1,118 @@
+scalar Date
+
+type Query {
+    # Movie queries
+    movies: [Movie!]!
+    movie(id: ID!): Movie
+    moviesByTitle(title: String!): [Movie!]!
+    moviesByGenre(genre: String!): [Movie!]!
+    moviesByDirector(director: String!): [Movie!]!
+
+    # User queries
+    users: [User!]!
+    user(id: ID!): User
+    userByUsername(username: String!): User
+
+    # Review queries
+    reviews: [Review!]!
+    review(id: ID!): Review
+    reviewsByMovie(movieId: ID!): [Review!]!
+    reviewsByUser(userId: ID!): [Review!]!
+}
+
+type Mutation {
+    # Movie mutations
+    createMovie(input: CreateMovieInput!): Movie!
+    updateMovie(id: ID!, input: UpdateMovieInput!): Movie!
+    deleteMovie(id: ID!): Boolean!
+
+    # User mutations
+    createUser(input: CreateUserInput!): User!
+    updateUser(id: ID!, input: UpdateUserInput!): User!
+    deleteUser(id: ID!): Boolean!
+
+    # Review mutations
+    createReview(input: CreateReviewInput!): Review!
+    updateReview(id: ID!, input: UpdateReviewInput!): Review!
+    deleteReview(id: ID!): Boolean!
+}
+
+type Movie {
+    id: ID!
+    title: String!
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+    reviews: [Review!]!
+    averageRating: Float
+    reviewCount: Int!
+}
+
+type User {
+    id: ID!
+    username: String!
+    email: String!
+    firstName: String
+    lastName: String
+    fullName: String
+    reviews: [Review!]!
+    reviewCount: Int!
+    createdAt: Date!
+    updatedAt: Date
+}
+
+type Review {
+    id: ID!
+    text: String
+    rating: Int!
+    movie: Movie!
+    user: User!
+    createdAt: Date!
+    updatedAt: Date
+}
+
+# Input types for mutations
+input CreateMovieInput {
+    title: String!
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+}
+
+input UpdateMovieInput {
+    title: String
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+}
+
+input CreateUserInput {
+    username: String!
+    email: String!
+    password: String!
+    firstName: String
+    lastName: String
+}
+
+input UpdateUserInput {
+    username: String
+    email: String
+    password: String
+    firstName: String
+    lastName: String
+}
+
+input CreateReviewInput {
+    text: String
+    rating: Int!
+    movieId: ID!
+    userId: ID!
+}
+
+input UpdateReviewInput {
+    text: String
+    rating: Int
+}

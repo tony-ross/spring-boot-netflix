@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # Gateway Service
+  gateway-service:
+    build:
+      context: ./services/gateway-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVICES_MOVIES_URL=http://movies-service:8081
+      - SERVICES_USERS_URL=http://users-service:8082
+      - SERVICES_REVIEWS_URL=http://reviews-service:8083
+    depends_on:
+      - movies-service
+      - users-service
+      - reviews-service
+    networks:
+      - netflix-network
+
+  # Movies Service
+  movies-service:
+    build:
+      context: ./services/movies-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://movies-db:5432/netflix_movies
+      - SPRING_DATASOURCE_USERNAME=netflix_user
+      - SPRING_DATASOURCE_PASSWORD=netflix_password
+    depends_on:
+      - movies-db
+    networks:
+      - netflix-network
+
+  # Users Service
+  users-service:
+    build:
+      context: ./services/users-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://users-db:5432/netflix_users
+      - SPRING_DATASOURCE_USERNAME=netflix_user
+      - SPRING_DATASOURCE_PASSWORD=netflix_password
+    depends_on:
+      - users-db
+    networks:
+      - netflix-network
+
+  # Reviews Service
+  reviews-service:
+    build:
+      context: ./services/reviews-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://reviews-db:5432/netflix_reviews
+      - SPRING_DATASOURCE_USERNAME=netflix_user
+      - SPRING_DATASOURCE_PASSWORD=netflix_password
+    depends_on:
+      - reviews-db
+    networks:
+      - netflix-network
+
+  # Movies Database
+  movies-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: netflix_movies
+      POSTGRES_USER: netflix_user
+      POSTGRES_PASSWORD: netflix_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - movies_data:/var/lib/postgresql/data
+    networks:
+      - netflix-network
+
+  # Users Database
+  users-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: netflix_users
+      POSTGRES_USER: netflix_user
+      POSTGRES_PASSWORD: netflix_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - users_data:/var/lib/postgresql/data
+    networks:
+      - netflix-network
+
+  # Reviews Database
+  reviews-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: netflix_reviews
+      POSTGRES_USER: netflix_user
+      POSTGRES_PASSWORD: netflix_password
+    ports:
+      - "5435:5432"
+    volumes:
+      - reviews_data:/var/lib/postgresql/data
+    networks:
+      - netflix-network
+
+volumes:
+  movies_data:
+  users_data:
+  reviews_data:
+
+networks:
+  netflix-network:
+    driver: bridge

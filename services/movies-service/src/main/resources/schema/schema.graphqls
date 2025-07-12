@@ -1,0 +1,40 @@
+scalar Date
+
+type Movie @key(fields: "id") {
+    id: ID!
+    title: String!
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+}
+
+input CreateMovieInput {
+    title: String!
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+}
+
+input UpdateMovieInput {
+    title: String!
+    description: String
+    releaseDate: Date
+    genre: String
+    director: String
+}
+
+type Query {
+    movies: [Movie!]!
+    movie(id: ID!): Movie
+    moviesByTitle(title: String!): [Movie!]!
+    moviesByGenre(genre: String!): [Movie!]!
+    moviesByDirector(director: String!): [Movie!]!
+}
+
+type Mutation {
+    createMovie(input: CreateMovieInput!): Movie!
+    updateMovie(id: ID!, input: UpdateMovieInput!): Movie!
+    deleteMovie(id: ID!): Boolean!
+}
