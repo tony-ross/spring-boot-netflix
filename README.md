@@ -1,6 +1,8 @@
 # 🎬 Netflix-Style Federated GraphQL Microservices
 
-A comprehensive implementation of Netflix's microservices architecture patterns using Spring Boot 3, demonstrating the evolution from monolith to federated GraphQL microservices.
+I was feeling inspired after watching Paul Bakker - Java Champion & Staff Software Engineer (Netflix) at JavaOne 2025 (CA, March 2025). He provided great insights into the new garbage collectors like generational ZGC, Virtual Threads, his view on native images.
+
+So here is my take on the Neflix microservices architecture patterns using Spring Boot 3, demonstrating the evolution from monolith to federated GraphQL microservices.
 
 ## 📋 Project Overview
 
@@ -43,7 +45,7 @@ This project showcases a **complete three-phase transformation**:
 ### Prerequisites
 - Java 21+
 - Docker and Docker Compose
-- IntelliJ IDEA (recommended)
+- IntelliJ
 
 ### Run All Microservices (Phase 3)
 
